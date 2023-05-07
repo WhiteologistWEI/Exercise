@@ -292,3 +292,70 @@ public class Sort {
 		}
 	}
 }
+
+class RadixSort {
+	/**
+	 * 基数排序
+	 * @param a
+	 */
+	static void radixSort(int[] a) {
+		int[][] baskets = new int[10][a.length];	// 桶
+		int[] basketsCount = new int[10];			// 每个桶中的元素个数
+		
+		// 1.找到数组中最大值的位数作为第一层循环的次数n
+		int max=0;
+		for(int i=0;i<a.length;i++) {
+			if(max<a[i])
+				max=a[max];
+		}
+		
+		int digitNumber = calcMaxPosition(max);
+		
+		for(int k=1;k<=digitNumber;k++) {
+			// 2.遍历数组，计算每个数第n位的数值。此数值作为下表放入桶中
+			for(int j=0;j<a.length;j++) {
+				int pos = calcValue(a[j], k);
+				baskets[pos][basketsCount[pos]++] = a[j];
+			}
+
+			// 3.遍历十个桶，将数取出
+			int l=0;
+			for(int i=0;i<10;i++) {
+				// 遍历每个桶，取出数
+				for(int j=0;j<basketsCount[i];j++) {
+					a[l++] = baskets[i][j];
+				}
+				// 取数结束后，桶内元素数量重置为0
+				basketsCount[i]=0;
+			}
+			
+//			show(a, 'h');
+		}
+		System.out.println("=======排序结束========");
+//		show(a, 'h');
+	}
+	
+	/**
+	 * 计算最大值的位数
+	 * @param a
+	 * @return
+	 */
+	static int calcMaxPosition(int a) {
+		int c=1;
+		while(a>9) {
+			a /=10;
+			c++;
+		}
+		return c;
+	}
+	
+	/**
+	 * 计算每个数字第pos位的值是多少
+	 * @param a
+	 * @param pos
+	 * @return
+	 */
+	static int calcValue(int a, int pos) {
+		return (int) Math.abs((a/Math.pow(10, pos-1)%10));
+	}
+}
